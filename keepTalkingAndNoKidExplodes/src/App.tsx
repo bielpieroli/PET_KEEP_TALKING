@@ -198,10 +198,6 @@ function App() {
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
             <span>SERIAL: {serialNumber}</span>
             <span>BATERIAS: {batteries}</span>
-            <Button onClick={() => setShowManual(true)} variant="outline" size="sm">
-              <Book className="w-4 h-4 mr-1" />
-              Manual
-            </Button>
           </div>
         </div>
 
