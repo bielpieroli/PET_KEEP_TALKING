@@ -16,7 +16,11 @@ function App() {
   const [showManual, setShowManual] = useState(false)
   const [wiresDefused, setWiresDefused] = useState(false)
   const [buttonDefused, setButtonDefused] = useState(false)
-  const [serialNumber] = useState(() => Math.random().toString(36).substring(2, 8).toUpperCase())
+  const [serialNumber] = useState(() => {
+  const randomString = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const lastDigit = Math.floor(Math.random() * 10).toString();
+    return randomString + lastDigit;
+});
   const [batteries] = useState(() => Math.floor(Math.random() * 4) + 1)
 
   // Timer logic
