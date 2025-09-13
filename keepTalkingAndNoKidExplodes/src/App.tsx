@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { AlertTriangle, RotateCcw, Book, Clock } from "lucide-react"
+import { AlertTriangle, RotateCcw, Book, Clock, Layers } from "lucide-react"
 import { Card } from "./components/ui/Card"
 import { Button } from "./components/ui/Button"
 import { WireModule } from "./components/WireModule"
@@ -8,22 +8,31 @@ import { Timer } from "./components/Timer"
 import { Manual } from "./components/Manual"
 
 type GameState = "menu" | "playing" | "won" | "lost" | "exploded"
+type ModuleType = "FIOS" | "BOTÃO"
+
+interface ModuleConfig {
+  id: number
+  type: ModuleType
+  defused: boolean
+}
 
 function App() {
   const [gameState, setGameState] = useState<GameState>("menu")
   const [timeLeft, setTimeLeft] = useState(300)
   const [initialTime, setInitialTime] = useState(300)
   const [showManual, setShowManual] = useState(false)
-  const [wiresDefused, setWiresDefused] = useState(false)
-  const [buttonDefused, setButtonDefused] = useState(false)
+
+  const [modules, setModules] = useState<ModuleConfig[]>([])
+  const [moduleCount, setModuleCount] = useState(3)
+
   const [serialNumber] = useState(() => {
-  const randomString = Math.random().toString(36).substring(2, 7).toUpperCase();
+    const randomString = Math.random().toString(36).substring(2, 7).toUpperCase();
     const lastDigit = Math.floor(Math.random() * 10).toString();
     return randomString + lastDigit;
-});
+  });
   const [batteries] = useState(() => Math.floor(Math.random() * 4) + 1)
 
-  // Timer logic
+  // Timer
   useEffect(() => {
     if (gameState === "playing" && timeLeft > 0) {
       const timer = setInterval(() => {
@@ -39,68 +48,84 @@ function App() {
     }
   }, [gameState, timeLeft])
 
-  // Check win condition
+  // Win condition
   useEffect(() => {
-    if (wiresDefused && buttonDefused && gameState === "playing") {
+    if (gameState === "playing" && modules.length > 0 && modules.every((m) => m.defused)) {
       setGameState("won")
     }
-  }, [wiresDefused, buttonDefused, gameState])
+  }, [modules, gameState])
 
   const handleExplosion = () => {
     setGameState("exploded")
   }
 
+  const generateModules = (count: number): ModuleConfig[] => {
+    const types: ModuleType[] = ["FIOS", "BOTÃO"]
+    return Array.from({ length: count }, (_, i) => ({
+      id: i + 1,
+      type: types[Math.floor(Math.random() * types.length)],
+      defused: false,
+    }))
+  }
+
   const startGame = () => {
+    if (initialTime <= 0 || moduleCount <= 0) {
+      alert("Defina um tempo e quantidade de módulos válidos!")
+      return
+    }
     setGameState("playing")
     setTimeLeft(initialTime)
-    setWiresDefused(false)
-    setButtonDefused(false)
+    setModules(generateModules(moduleCount))
   }
 
   const resetGame = () => {
     setGameState("menu")
     setTimeLeft(initialTime)
-    setWiresDefused(false)
-    setButtonDefused(false)
+    setModules([])
   }
 
-  const timePresets = [
-    { label: "1 min", value: 60 },
-    { label: "3 min", value: 180 },
-    { label: "5 min", value: 300 },
-    { label: "10 min", value: 600 },
-  ]
+  const markDefused = (id: number) => {
+    setModules((prev) =>
+      prev.map((m) => (m.id === id ? { ...m, defused: true } : m))
+    )
+  }
 
   if (gameState === "menu") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center border-2 border-primary">
+        <Card className="max-w-md w-full p-8 text-center bg-card">
           <div className="mb-6">
             <AlertTriangle className="w-16 h-16 text-primary mx-auto mb-4" />
             <h1 className="text-3xl font-bold text-foreground mb-2">DEFUSADOR DE BOMBA</h1>
             <p className="text-muted-foreground">Baseado em Keep Talking and Nobody Explodes</p>
           </div>
 
-          <div className="mb-6">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <Clock className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">Tempo da Missão</span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              {timePresets.map((preset) => (
-                <Button
-                  key={preset.value}
-                  onClick={() => setInitialTime(preset.value)}
-                  variant={initialTime === preset.value ? "default" : "outline"}
-                  size="sm"
-                  className="text-sm"
-                >
-                  {preset.label}
-                </Button>
-              ))}
-            </div>
+          {/* Inputs de configuração */}
+          <div className="mb-6 space-y-4 text-left">
+            <label className="block text-sm font-medium text-muted-foreground">
+              <Clock className="w-4 h-4 inline mr-1" /> Tempo da Missão (segundos)
+            </label>
+            <input
+              type="number"
+              min={10}
+              className="w-full p-2 border rounded bg-background"
+              value={initialTime}
+              onChange={(e) => setInitialTime(Number(e.target.value))}
+            />
+
+            <label className="block text-sm font-medium text-muted-foreground">
+              <Layers className="w-4 h-4 inline mr-1" /> Quantidade de Módulos
+            </label>
+            <input
+              type="number"
+              min={1}
+              className="w-full p-2 border rounded bg-background"
+              value={moduleCount}
+              onChange={(e) => setModuleCount(Number(e.target.value))}
+            />
           </div>
 
+          {/* Botões de iniciar/manual */}
           <div className="space-y-4">
             <Button
               onClick={startGame}
@@ -125,7 +150,7 @@ function App() {
   if (gameState === "won") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center border-2 border-green-500">
+        <Card className="max-w-md w-full p-8 text-center border-2 border-green-500 bg-card">
           <div className="mb-6">
             <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">✓</span>
@@ -171,7 +196,7 @@ function App() {
   if (gameState === "lost") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
-        <Card className="max-w-md w-full p-8 text-center border-2 border-primary">
+        <Card className="max-w-md w-full p-8 text-center border-2 border-primary bg-card">
           <div className="mb-6">
             <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-danger">
               <span className="text-2xl text-primary-foreground">⏰</span>
@@ -208,37 +233,44 @@ function App() {
         {/* Timer */}
         <Timer timeLeft={timeLeft} />
 
-        {/* Modules */}
+        {/* Modules dinâmicos */}
         <div className="grid md:grid-cols-2 gap-6 mt-6">
-          <WireModule
-            onDefused={() => setWiresDefused(true)}
-            onExplode={handleExplosion}
-            serialNumber={serialNumber}
-            isDefused={wiresDefused}
-          />
-
-          <ButtonModule
-            onDefused={() => setButtonDefused(true)}
-            onExplode={handleExplosion}
-            serialNumber={serialNumber}
-            isDefused={buttonDefused}
-            batteries={batteries}
-          />
+          {modules.map((module) => (
+            <div key={module.id} className="bg-slate-300 rounded-lg p-4 shadow-lg">
+              {module.type === "FIOS" && (
+                <WireModule
+                  onDefused={() => markDefused(module.id)}
+                  onExplode={handleExplosion}
+                  serialNumber={serialNumber}
+                  isDefused={module.defused}
+                />
+              )}
+              {module.type === "BOTÃO" && (
+                <ButtonModule
+                  onDefused={() => markDefused(module.id)}
+                  onExplode={handleExplosion}
+                  isDefused={module.defused}
+                  batteries={batteries}
+                  timeLeft={timeLeft}
+                />
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Status */}
         <div className="mt-6 text-center">
-          <div className="flex justify-center gap-4 text-sm">
-            <span
-              className={`px-3 py-1 rounded ${wiresDefused ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"}`}
-            >
-              FIOS: {wiresDefused ? "DEFUSADO" : "ATIVO"}
-            </span>
-            <span
-              className={`px-3 py-1 rounded ${buttonDefused ? "bg-green-500 text-white" : "bg-muted text-muted-foreground"}`}
-            >
-              BOTÃO: {buttonDefused ? "DEFUSADO" : "ATIVO"}
-            </span>
+          <div className="flex flex-wrap justify-center gap-2 text-sm">
+            {modules.map((m) => (
+              <span
+                key={m.id}
+                className={`px-3 py-1 rounded ${
+                  m.defused ? "bg-green-500 text-white" : "bg-slate-300 text-muted-foreground"
+                }`}
+              >
+                {m.type.toUpperCase()}: {m.defused ? "DEFUSADO" : "ATIVO"}
+              </span>
+            ))}
           </div>
         </div>
       </div>

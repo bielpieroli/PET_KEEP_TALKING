@@ -67,63 +67,38 @@ if quantidade_fios == 6:
   else:
     corte = 4`}
             </pre>
-            
-            <p className="text-sm text-muted-foreground">
-              Nota: Os fios são numerados de cima para baixo (1 é o mais alto).<br/>
-              serial_impar: True se o último dígito do número de série for ímpar.
-            </p>
           </div>
           
           <div className="border-t pt-4">
             <h3 className="text-xl font-bold mb-3 text-blue-600">Módulo de Botão</h3>
-            <p className="mb-3">O módulo possui um botão grande e uma luz colorida com uma sigla.</p>
+            <p className="mb-3">O módulo possui um botão grande, uma luz colorida com uma sigla, além de uma faixa de luz.
+              Primeiramente, verifique se o botão deve ser apenas clicado e solto imediatamento, ou se ele deve ficar pressionado e solto no momento adequado: aquele quando o timer contiver o número desejado.
+            </p>
             
             <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm mb-4">
 {`# Verifique se deve pressionar e soltar imediatamente
-if luz == "azul" and sigla == "CAR":
-    acao = "pressione_e_solte"
-elif cor_botao == "branco" and indicador_CAR_aceso == True:
-    acao = "pressione_e_solte"
-elif baterias > 2 and luz == "vermelha":
-    acao = "pressione_e_solte"
-elif luz == "amarela" and indicador_FRK_apagado == True:
-    acao = "pressione_e_solte"
+if LED == "azul" and sigla == "CAR":
+    acao = "apenas_clique"
+elif cor_botao == "branco" and sigla == "BOB":
+    acao = "apenas_clique"
+elif baterias > 2 and LED == "vermelha":
+    acao = "apenas_clique"
+elif LED == "amarela" and sigla == "FRK":
+    acao = "apenas_clique"
 else:
     # Caso contrário, mantenha pressionado
+    acao = "mantenha_pressionado"
+    # De acordo com a faixa, solte quando houver no timer
     if faixa == "azul":
-        liberar_em = 4
+        solte_quando_houver_no_timer = 4
     elif faixa == "amarela":
-        liberar_em = 5
+        solte_quando_houver_no_timer = 5
     elif faixa == "vermelha":
-        liberar_em = 1
+        solte_quando_houver_no_timer = 1
     elif faixa == "verde":
-        liberar_em = 3
+        solte_quando_houver_no_timer = 3
     elif faixa == "branca":
-        liberar_em = 2`}
-            </pre>
-          </div>
-          
-          <div className="border-t pt-4">
-            <h3 className="text-lg font-bold mb-2">Variáveis Disponíveis</h3>
-            <pre className="bg-muted p-3 rounded-md overflow-x-auto text-xs">
-{`quantidade_fios      # Número total de fios (3-6)
-vermelho            # Quantidade de fios vermelhos
-azul               # Quantidade de fios azuis
-amarelo            # Quantidade de fios amarelos
-branco             # Quantidade de fios brancos
-preto              # Quantidade de fios pretos
-ultimo_fio         # Cor do último fio
-ultimo_vermelho    # Posição do último fio vermelho
-ultimo_azul        # Posição do último fio azul
-serial_impar       # True se último dígito do serial for ímpar
-
-luz                # Cor da luz (azul, vermelha, amarela)
-sigla              # Sigla ao lado do botão (CAR, FRK, SIG, NSA)
-cor_botao          # Cor do botão
-baterias           # Número de baterias na bomba
-indicador_CAR_aceso    # True se houver indicador CAR aceso
-indicador_FRK_apagado  # True se houver indicador FRK apagado
-faixa              # Cor da faixa (azul, amarela, vermelha, verde, branca)`}
+        solte_quando_houver_no_timer = 2`}
             </pre>
           </div>
           

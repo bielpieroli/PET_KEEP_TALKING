@@ -94,7 +94,7 @@ export function WireModule({ onDefused, onExplode, serialNumber, isDefused }: Wi
   }
   
   return (
-    <Card className="p-6">
+    <Card className="p-6 bg-slate-300">
       <h2 className="text-xl font-bold mb-4 text-center">MÓDULO DE FIOS</h2>
       <div className="flex flex-col items-center space-y-2">
         <div className="w-full h-8 bg-gray-700 rounded-t-lg"></div>
