@@ -230,8 +230,10 @@ function App() {
           </div>
         </div>
 
-        {/* Timer */}
+        {/* Timer fixado */}
+      <div className="sticky top-0 z-50 bg-background py-2 shadow-md">
         <Timer timeLeft={timeLeft} />
+      </div>
 
         {/* Modules dinâmicos */}
         <div className="grid md:grid-cols-2 gap-6 mt-6">
