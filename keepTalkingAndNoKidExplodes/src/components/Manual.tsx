@@ -104,7 +104,7 @@ else:
           
           <div className="border-t pt-4">
             <h3 className="text-lg font-bold mb-2">Geral</h3>
-            <p>Ambos os módulos devem ser desativados para vencer o jogo.</p>
+            <p>Todos os módulos devem ser desativados para vencer o jogo.</p>
             <p className="font-semibold text-red-600">Cuidado com o tempo! Se acabar, a bomba explode.</p>
           </div>
         </div>

@@ -6,6 +6,8 @@ import { WireModule } from "./components/WireModule"
 import { ButtonModule } from "./components/ButtonModule"
 import { Timer } from "./components/Timer"
 import { Manual } from "./components/Manual"
+import { ManualPseudo } from "./components/ManualPseudo"
+import { ManualScratch } from "./components/ManualScratch"
 
 type GameState = "menu" | "playing" | "won" | "lost" | "exploded"
 type ModuleType = "FIOS" | "BOTÃO"
@@ -20,7 +22,11 @@ function App() {
   const [gameState, setGameState] = useState<GameState>("menu")
   const [timeLeft, setTimeLeft] = useState(300)
   const [initialTime, setInitialTime] = useState(300)
-  const [showManual, setShowManual] = useState(false)
+  
+  // Separar manual Python e manual Pseudocódigo
+  const [showManualPython, setShowManualPython] = useState(false)
+  const [showManualPseudo, setShowManualPseudo] = useState(false)
+  const [showManualScratch, setShowManualScratch] = useState(false)
 
   const [modules, setModules] = useState<ModuleConfig[]>([])
   const [moduleCount, setModuleCount] = useState(3)
@@ -135,14 +141,26 @@ function App() {
               INICIAR MISSÃO
             </Button>
 
-            <Button onClick={() => setShowManual(true)} variant="outline" className="w-full" size="lg">
+            <Button onClick={() => setShowManualPseudo(true)} variant="outline" className="w-full" size="lg">
               <Book className="w-4 h-4 mr-2" />
-              MANUAL DE DEFUSAGEM
+              MANUAL EM PSEUDOCÓDIGO
+            </Button>
+
+              <Button onClick={() => setShowManualPython(true)} variant="outline" className="w-full" size="lg">
+              <Book className="w-4 h-4 mr-2" />
+              MANUAL EM PYTHON
+            </Button>
+              
+              <Button onClick={() => setShowManualScratch(true)} variant="outline" className="w-full" size="lg">
+              <Book className="w-4 h-4 mr-2" />
+              MANUAL EM SCRATCH
             </Button>
           </div>
         </Card>
 
-        {showManual && <Manual onClose={() => setShowManual(false)} />}
+        {showManualPseudo && <ManualPseudo onClose={() => setShowManualPseudo(false)} />}
+        {showManualPython && <Manual onClose={() => setShowManualPython(false)} />}
+        {showManualScratch && <ManualScratch onClose={() => setShowManualScratch(false)} />}
       </div>
     )
   }
@@ -231,9 +249,9 @@ function App() {
         </div>
 
         {/* Timer fixado */}
-      <div className="sticky top-0 z-50 bg-background py-2 shadow-md">
-        <Timer timeLeft={timeLeft} />
-      </div>
+        <div className="sticky top-0 z-50 bg-background py-2 shadow-md">
+          <Timer timeLeft={timeLeft} />
+        </div>
 
         {/* Modules dinâmicos */}
         <div className="grid md:grid-cols-2 gap-6 mt-6">
@@ -276,8 +294,6 @@ function App() {
           </div>
         </div>
       </div>
-
-      {showManual && <Manual onClose={() => setShowManual(false)} />}
     </div>
   )
 }
