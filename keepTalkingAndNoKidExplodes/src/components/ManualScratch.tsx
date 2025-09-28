@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
 import { Card } from "./ui/Card";
-import fios1 from "./../assets/fios1.png";
-import fios2 from "./../assets/fios2.png";
-import fios3 from "./../assets/fios3.png";
-import fios4 from "./../assets/fios4.png";
+import fios1 from "./../assets/1.png";
+import fios2 from "./../assets/2.png";
+import fios3 from "./../assets/3.png";
+import fios4 from "./../assets/4.png";
 import botao from "./../assets/botao.png";
 
 interface ManualProps {

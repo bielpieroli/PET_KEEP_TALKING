@@ -7,7 +7,7 @@ interface ButtonModuleProps {
   onDefused: () => void;
   onExplode: () => void;
   isDefused: boolean;
-  batteries: number;
+  //batteries: number;
   timeLeft: number;
 }
 
@@ -15,14 +15,14 @@ export function ButtonModule({
   onDefused,
   onExplode,
   isDefused,
-  batteries,
+  //batteries,
   timeLeft,
 }: ButtonModuleProps) {
   // Configuração inicial do botão (seu código aqui já era ótimo!)
   const [buttonConfig] = useState(() => {
     const lightColors = ["blue", "red", "yellow", "white", "green"];
     const labels = ["CAR", "FRK", "SIG", "NSA", "BOB", "MSA", "TRN"];
-    const stripColors = ["blue", "white"];
+    const stripColors = ["blue", "red", "yellow", "white", "black", "green"];
     const buttonColors = ["blue", "red", "yellow", "white", "black", "green"];
     const buttonTexts = [
       "Detonate",
@@ -82,10 +82,10 @@ export function ButtonModule({
       buttonConfig.lightColor === "blue" && buttonConfig.label === "CAR";
     const cond2 =
       buttonConfig.buttonColor === "white" && buttonConfig.label === "BOB";
-    const cond3 = batteries > 2 && buttonConfig.lightColor === "red";
+    //const cond3 = batteries > 2 && buttonConfig.lightColor === "red";
     const cond4 =
       buttonConfig.lightColor === "yellow" && buttonConfig.label === "FRK";
-    return cond1 || cond2 || cond3 || cond4;
+    return cond1 || cond2 /*|| cond3*/ || cond4;
   };
 
   const getTargetDigit = () => {

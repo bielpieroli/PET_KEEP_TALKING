@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AlertTriangle, RotateCcw, Book, Clock, Layers } from "lucide-react";
 import { Card } from "./components/ui/Card";
 import { Button } from "./components/ui/Button";
@@ -9,6 +9,8 @@ import { Manual } from "./components/Manual";
 import { ManualPseudo } from "./components/ManualPseudo";
 import { ManualScratch } from "./components/ManualScratch";
 import explosionSoundFile from "./assets/sounds/explosion.mp3";
+import tickSoundFile from "./assets/sounds/clock_tick.mp3";
+import victorySoundFile from "./assets/sounds/victory.mp3"; // <-- NOVO
 
 // --- TIPOS ---
 type GameState = "menu" | "playing" | "won" | "lost" | "exploded";
@@ -19,32 +21,68 @@ interface ModuleConfig {
   defused: boolean;
 }
 
-// --- COMPONENTE PRINCIPAL ---
+// --- CONSTANTES ---
+const TICK_FAST_THRESHOLD = 60;
+const TICK_NORMAL_MS = 1000;
+const TICK_FAST_MS = 500;
+
 function App() {
-  // Estados do Jogo
+  // Estados
   const [gameState, setGameState] = useState<GameState>("menu");
   const [timeLeft, setTimeLeft] = useState(300);
   const [initialTime, setInitialTime] = useState(300);
   const [modules, setModules] = useState<ModuleConfig[]>([]);
   const [moduleCount, setModuleCount] = useState(3);
 
-  // Estados dos Manuais
+  // Manuais
   const [showManualPython, setShowManualPython] = useState(false);
   const [showManualPseudo, setShowManualPseudo] = useState(false);
   const [showManualScratch, setShowManualScratch] = useState(false);
 
-  // Estados da Bomba (agora podem ser resetados)
+  // Bomba
   const [serialNumber, setSerialNumber] = useState("");
-  const [batteries, setBatteries] = useState(0);
 
-  // Otimização do Áudio de Explosão
+  // Sons
   const [explosionSound] = useState(() => {
-    const audio = new Audio(explosionSoundFile);
-    audio.volume = 0.3;
-    return audio;
+    const a = new Audio(explosionSoundFile);
+    a.volume = 0.35;
+    return a;
+  });
+  const [tickSound] = useState(() => {
+    const a = new Audio(tickSoundFile);
+    a.volume = 0.5;
+    return a;
+  });
+  const [victorySound] = useState(() => {
+    const a = new Audio(victorySoundFile);
+    a.volume = 0.4;
+    return a;
   });
 
-  // Função para gerar novos dados da bomba para cada partida
+  // Tick
+  const tickIntervalRef = useRef<number | null>(null);
+  const playTick = () => {
+    try {
+      tickSound.currentTime = 0;
+      void tickSound.play();
+    } catch {}
+  };
+  const startTick = (ms: number) => {
+    stopTick();
+    tickIntervalRef.current = window.setInterval(playTick, ms);
+  };
+  const stopTick = () => {
+    if (tickIntervalRef.current !== null) {
+      clearInterval(tickIntervalRef.current);
+      tickIntervalRef.current = null;
+    }
+    try {
+      tickSound.pause();
+      tickSound.currentTime = 0;
+    } catch {}
+  };
+
+  // Gera dados da bomba
   const generateNewBombData = () => {
     const randomString = Math.random()
       .toString(36)
@@ -52,15 +90,19 @@ function App() {
       .toUpperCase();
     const lastDigit = Math.floor(Math.random() * 10).toString();
     setSerialNumber(randomString + lastDigit);
-    setBatteries(Math.floor(Math.random() * 4) + 1);
   };
 
-  // Efeito do Timer
+  // Timer
   useEffect(() => {
     if (gameState === "playing" && timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft((prev) => {
           if (prev <= 1) {
+            stopTick();
+            try {
+              explosionSound.currentTime = 0;
+              void explosionSound.play();
+            } catch {}
             setGameState("lost");
             return 0;
           }
@@ -69,25 +111,46 @@ function App() {
       }, 1000);
       return () => clearInterval(timer);
     }
+  }, [gameState, timeLeft, explosionSound]);
+
+  // Tick automático
+  useEffect(() => {
+    if (gameState !== "playing" || timeLeft <= 0) {
+      stopTick();
+      return;
+    }
+    const ms = timeLeft <= TICK_FAST_THRESHOLD ? TICK_FAST_MS : TICK_NORMAL_MS;
+    startTick(ms);
+    return () => stopTick();
   }, [gameState, timeLeft]);
 
-  // Efeito da Condição de Vitória
+  // Vitória
   useEffect(() => {
     if (
       gameState === "playing" &&
       modules.length > 0 &&
       modules.every((m) => m.defused)
     ) {
+      stopTick();
+      try {
+        victorySound.currentTime = 0;
+        void victorySound.play();
+      } catch {}
       setGameState("won");
     }
-  }, [modules, gameState]);
+  }, [modules, gameState, victorySound]);
 
-  // Função de Explosão (agora com som)
+  // Explosão manual
   const handleExplosion = () => {
-    explosionSound.play();
+    stopTick();
+    try {
+      explosionSound.currentTime = 0;
+      void explosionSound.play();
+    } catch {}
     setGameState("exploded");
   };
 
+  // Helpers
   const generateModules = (count: number): ModuleConfig[] => {
     const types: ModuleType[] = ["FIOS", "BOTÃO"];
     return Array.from({ length: count }, (_, i) => ({
@@ -102,13 +165,14 @@ function App() {
       alert("Defina um tempo e quantidade de módulos válidos!");
       return;
     }
-    generateNewBombData(); // Gera novos dados para a bomba
+    generateNewBombData();
     setGameState("playing");
     setTimeLeft(initialTime);
     setModules(generateModules(moduleCount));
   };
 
   const resetGame = () => {
+    stopTick();
     setGameState("menu");
     setTimeLeft(initialTime);
     setModules([]);
@@ -121,7 +185,6 @@ function App() {
   };
 
   // --- RENDERIZAÇÃO ---
-
   if (gameState === "menu") {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -287,6 +350,7 @@ function App() {
     );
   }
 
+  // Tela de jogo
   return (
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-4xl mx-auto">
@@ -295,8 +359,12 @@ function App() {
             DISPOSITIVO EXPLOSIVO ATIVO
           </h1>
           <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-            <span>SERIAL: {serialNumber}</span>
-            <span>BATERIAS: {batteries}</span>
+            <span className="text-xl text-foreground">
+              NÚMERO DA BOMBA:{" "}
+              <span className="text-foreground text-red-400">
+                {serialNumber}
+              </span>
+            </span>
           </div>
         </div>
 
@@ -323,7 +391,6 @@ function App() {
                   onDefused={() => markDefused(module.id)}
                   onExplode={handleExplosion}
                   isDefused={module.defused}
-                  batteries={batteries}
                   timeLeft={timeLeft}
                 />
               )}
