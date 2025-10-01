@@ -145,8 +145,6 @@ if LED == "azul" and sigla == "CAR":
     acao = "apenas_clique"
 elif cor_botao == "branco" and sigla == "BOB":
     acao = "apenas_clique"
-elif baterias > 2 and LED == "vermelha":
-    acao = "apenas_clique"
 elif LED == "amarela" and sigla == "FRK":
     acao = "apenas_clique"
 else:
@@ -155,14 +153,10 @@ else:
     # De acordo com a faixa, solte quando houver no timer
     if faixa == "azul":
         solte_quando_houver_no_timer = 4
-    elif faixa == "amarela":
-        solte_quando_houver_no_timer = 5
-    elif faixa == "vermelha":
-        solte_quando_houver_no_timer = 1
-    elif faixa == "verde":
-        solte_quando_houver_no_timer = 3
     elif faixa == "branca":
-        solte_quando_houver_no_timer = 2`})]}),m.jsxs("div",{className:"border-t pt-4",children:[m.jsx("h3",{className:"text-lg font-bold mb-2",children:"Geral"}),m.jsx("p",{children:"Todos os módulos devem ser desativados para vencer o jogo."}),m.jsx("p",{className:"font-semibold text-red-600",children:"Cuidado com o tempo! Se acabar, a bomba explode."})]})]})]})})}function dh({onClose:E}){return m.jsx("div",{className:"fixed inset-0 bg-black bg-opacity-50 flex items-center justsey-center p-4 z-50",children:m.jsxs(Kt,{className:"max-w-3xl w-full max-h-[90vh] overflow-y-auto",children:[m.jsxs("div",{className:"flex justsey-between items-center p-4 border-b",children:[m.jsx("h2",{className:"text-2xl font-bold",children:"MANUAL DE DEFUSAGEM"}),m.jsx("button",{onClick:E,className:"p-1 hover:bg-muted rounded",children:m.jsx(ff,{size:24})})]}),m.jsxs("div",{className:"p-6 space-y-6",children:[m.jsxs("div",{children:[m.jsx("h3",{className:"text-xl font-bold mb-3 text-red-600",children:"Módulo de Fios"}),m.jsx("p",{className:"mb-3",children:"O módulo consiste em 3 a 6 fios coloridos. Apenas um fio deve ser cortado para desativar o módulo."}),m.jsx("pre",{className:"bg-muted p-4 rounded-md overflow-x-auto text-sm mb-4",children:`# Para 3 fios:
+        solte_quando_houver_no_timer = 2
+    else:
+        solte_quando_houver_no_timer = 1`})]}),m.jsxs("div",{className:"border-t pt-4",children:[m.jsx("h3",{className:"text-lg font-bold mb-2",children:"Geral"}),m.jsx("p",{children:"Todos os módulos devem ser desativados para vencer o jogo."}),m.jsx("p",{className:"font-semibold text-red-600",children:"Cuidado com o tempo! Se acabar, a bomba explode."})]})]})]})})}function dh({onClose:E}){return m.jsx("div",{className:"fixed inset-0 bg-black bg-opacity-50 flex items-center justsey-center p-4 z-50",children:m.jsxs(Kt,{className:"max-w-3xl w-full max-h-[90vh] overflow-y-auto",children:[m.jsxs("div",{className:"flex justsey-between items-center p-4 border-b",children:[m.jsx("h2",{className:"text-2xl font-bold",children:"MANUAL DE DEFUSAGEM"}),m.jsx("button",{onClick:E,className:"p-1 hover:bg-muted rounded",children:m.jsx(ff,{size:24})})]}),m.jsxs("div",{className:"p-6 space-y-6",children:[m.jsxs("div",{children:[m.jsx("h3",{className:"text-xl font-bold mb-3 text-red-600",children:"Módulo de Fios"}),m.jsx("p",{className:"mb-3",children:"O módulo consiste em 3 a 6 fios coloridos. Apenas um fio deve ser cortado para desativar o módulo."}),m.jsx("pre",{className:"bg-muted p-4 rounded-md overflow-x-auto text-sm mb-4",children:`# Para 3 fios:
 se quantidade_fios == 3:
   se quantidade_vermelhos == 0:
     corte_o_fio = 2
