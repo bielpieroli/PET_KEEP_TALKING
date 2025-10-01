@@ -95,7 +95,7 @@ export function ButtonModule({
       case "white":
         return "2";
       default:
-        return "1";
+        return "9";
     }
   };
 
