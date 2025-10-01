@@ -94,10 +94,8 @@ export function ButtonModule({
         return "4";
       case "white":
         return "2";
-      case null:
-        return "1";
       default:
-        return "0";
+        return "1";
     }
   };
 
