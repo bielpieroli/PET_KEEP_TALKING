@@ -1,8 +1,8 @@
-import { X } from "lucide-react"
-import { Card } from "./ui/Card"
+import { X } from "lucide-react";
+import { Card } from "./ui/Card";
 
 interface ManualProps {
-  onClose: () => void
+  onClose: () => void;
 }
 
 export function Manual({ onClose }: ManualProps) {
@@ -17,11 +17,16 @@ export function Manual({ onClose }: ManualProps) {
         </div>
         <div className="p-6 space-y-6">
           <div>
-            <h3 className="text-xl font-bold mb-3 text-red-600">Módulo de Fios</h3>
-            <p className="mb-3">O módulo consiste em 3 a 6 fios coloridos. Apenas um fio deve ser cortado para desativar o módulo.</p>
-            
+            <h3 className="text-xl font-bold mb-3 text-red-600">
+              Módulo de Fios
+            </h3>
+            <p className="mb-3">
+              O módulo consiste em 3 a 6 fios coloridos. Apenas um fio deve ser
+              cortado para desativar o módulo.
+            </p>
+
             <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm mb-4">
-{`# Para 3 fios:
+              {`# Para 3 fios:
 if quantidade_fios == 3:
   if vermelho == 0:
     corte = 2
@@ -68,20 +73,24 @@ if quantidade_fios == 6:
     corte = 4`}
             </pre>
           </div>
-          
+
           <div className="border-t pt-4">
-            <h3 className="text-xl font-bold mb-3 text-blue-600">Módulo de Botão</h3>
-            <p className="mb-3">O módulo possui um botão grande, uma luz colorida com uma sigla, além de uma faixa de luz.
-              Primeiramente, verifique se o botão deve ser apenas clicado e solto imediatamento, ou se ele deve ficar pressionado e solto no momento adequado: aquele quando o timer contiver o número desejado.
+            <h3 className="text-xl font-bold mb-3 text-blue-600">
+              Módulo de Botão
+            </h3>
+            <p className="mb-3">
+              O módulo possui um botão grande, uma luz colorida com uma sigla,
+              além de uma faixa de luz. Primeiramente, verifique se o botão deve
+              ser apenas clicado e solto imediatamento, ou se ele deve ficar
+              pressionado e solto no momento adequado: aquele quando o timer
+              contiver o número desejado.
             </p>
-            
+
             <pre className="bg-muted p-4 rounded-md overflow-x-auto text-sm mb-4">
-{`# Verifique se deve pressionar e soltar imediatamente
+              {`# Verifique se deve pressionar e soltar imediatamente
 if LED == "azul" and sigla == "CAR":
     acao = "apenas_clique"
 elif cor_botao == "branco" and sigla == "BOB":
-    acao = "apenas_clique"
-elif baterias > 2 and LED == "vermelha":
     acao = "apenas_clique"
 elif LED == "amarela" and sigla == "FRK":
     acao = "apenas_clique"
@@ -91,24 +100,22 @@ else:
     # De acordo com a faixa, solte quando houver no timer
     if faixa == "azul":
         solte_quando_houver_no_timer = 4
-    elif faixa == "amarela":
-        solte_quando_houver_no_timer = 5
-    elif faixa == "vermelha":
-        solte_quando_houver_no_timer = 1
-    elif faixa == "verde":
-        solte_quando_houver_no_timer = 3
     elif faixa == "branca":
-        solte_quando_houver_no_timer = 2`}
+        solte_quando_houver_no_timer = 2
+    else:
+        solte_quando_houver_no_timer = 1`}
             </pre>
           </div>
-          
+
           <div className="border-t pt-4">
             <h3 className="text-lg font-bold mb-2">Geral</h3>
             <p>Todos os módulos devem ser desativados para vencer o jogo.</p>
-            <p className="font-semibold text-red-600">Cuidado com o tempo! Se acabar, a bomba explode.</p>
+            <p className="font-semibold text-red-600">
+              Cuidado com o tempo! Se acabar, a bomba explode.
+            </p>
           </div>
         </div>
       </Card>
     </div>
-  )
+  );
 }
