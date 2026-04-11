@@ -5,7 +5,6 @@ import { Button } from "./components/ui/Button";
 import { WireModule } from "./components/WireModule";
 import { ButtonModule } from "./components/ButtonModule";
 import { Timer } from "./components/Timer";
-import { Manual } from "./components/Manual";
 import { ManualPseudo } from "./components/ManualPseudo";
 import { ManualScratch } from "./components/ManualScratch";
 import explosionSoundFile from "./assets/sounds/explosion.mp3";
@@ -35,7 +34,6 @@ function App() {
   const [moduleCount, setModuleCount] = useState(3);
 
   // Manuais
-  const [showManualPython, setShowManualPython] = useState(false);
   const [showManualPseudo, setShowManualPseudo] = useState(false);
   const [showManualScratch, setShowManualScratch] = useState(false);
 
@@ -240,14 +238,6 @@ function App() {
               <Book className="w-4 h-4 mr-2" /> MANUAL EM PSEUDOCÓDIGO
             </Button>
             <Button
-              onClick={() => setShowManualPython(true)}
-              variant="outline"
-              className="w-full"
-              size="lg"
-            >
-              <Book className="w-4 h-4 mr-2" /> MANUAL EM PYTHON
-            </Button>
-            <Button
               onClick={() => setShowManualScratch(true)}
               variant="outline"
               className="w-full"
@@ -260,9 +250,6 @@ function App() {
 
         {showManualPseudo && (
           <ManualPseudo onClose={() => setShowManualPseudo(false)} />
-        )}
-        {showManualPython && (
-          <Manual onClose={() => setShowManualPython(false)} />
         )}
         {showManualScratch && (
           <ManualScratch onClose={() => setShowManualScratch(false)} />
