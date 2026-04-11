@@ -415,6 +415,8 @@ function App() {
           </div>
         </div>
       </div>
+
+      {showManual && <Manual onClose={() => setShowManual(false)} />}
     </div>
   );
 }
